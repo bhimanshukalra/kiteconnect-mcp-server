@@ -1,8 +1,9 @@
-import { McpServer } from "@modelcontextprotocol/server";
-import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
-import * as z from "zod/v4";
+import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { z } from "zod";
+import { placeOrder } from "./trade";
 
-const server = new McpServer({ name: "greeting-server", version: "1.0.0" });
+const server = new McpServer({ name: "demo-server", version: "1.0.0" });
 
 server.registerTool(
   "greet",
@@ -13,6 +14,62 @@ server.registerTool(
   async ({ name }: { name: string }) => ({
     content: [{ type: "text", text: `Hello, ${name}!` }],
   }),
+);
+
+server.registerTool(
+  "add_two_numbers",
+  {
+    description: "Calculate sum of two numbers.",
+    inputSchema: z.object({ a: z.number(), b: z.number() }),
+  },
+  async ({ a, b }: { a: number; b: number }) => ({
+    content: [{ type: "text", text: String(a + b) }],
+  }),
+);
+
+server.registerTool(
+  "factorial",
+  {
+    description: "Calculate factorial of a number.",
+    inputSchema: z.object({ a: z.number() }),
+  },
+  async ({ a }: { a: number }) => {
+    let answer = 1;
+    for (let i = 2; i <= a; i++) {
+      answer *= i;
+    }
+    return {
+      content: [{ type: "text", text: String(answer) }],
+    };
+  },
+);
+
+server.registerTool(
+  "Buy a stock",
+  {
+    description: "Buy a stock",
+    inputSchema: z.object({ stock: z.string(), qty: z.number() }),
+  },
+  async ({ stock, qty }: { stock: string; qty: number }) => {
+    placeOrder(stock, qty, "BUY");
+    return {
+      content: [{ type: "text", text: "Stock has been bought" }],
+    };
+  },
+);
+
+server.registerTool(
+  "Sell a stock",
+  {
+    description: "Sell a stock",
+    inputSchema: z.object({ stock: z.string(), qty: z.number() }),
+  },
+  async ({ stock, qty }: { stock: string; qty: number }) => {
+    placeOrder(stock, qty, "SELL");
+    return {
+      content: [{ type: "text", text: "Stock has been sold" }],
+    };
+  },
 );
 
 async function main() {
