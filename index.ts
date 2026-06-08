@@ -31,7 +31,7 @@ server.registerTool(
   "factorial",
   {
     description: "Calculate factorial of a number.",
-    inputSchema: z.object({ a: z.number() }),
+    inputSchema: z.object({ a: z.number().int().nonnegative() }),
   },
   async ({ a }: { a: number }) => {
     let answer = 1;
@@ -45,13 +45,13 @@ server.registerTool(
 );
 
 server.registerTool(
-  "Buy a stock",
+  "buy_stock",
   {
     description: "Buy a stock",
-    inputSchema: z.object({ stock: z.string(), qty: z.number() }),
+    inputSchema: z.object({ stock: z.string(), qty: z.number().positive() }),
   },
   async ({ stock, qty }: { stock: string; qty: number }) => {
-    placeOrder(stock, qty, "BUY");
+    await placeOrder(stock, qty, "BUY");
     return {
       content: [{ type: "text", text: "Stock has been bought" }],
     };
@@ -59,13 +59,13 @@ server.registerTool(
 );
 
 server.registerTool(
-  "Sell a stock",
+  "sell_stock",
   {
     description: "Sell a stock",
-    inputSchema: z.object({ stock: z.string(), qty: z.number() }),
+    inputSchema: z.object({ stock: z.string(), qty: z.number().positive() }),
   },
   async ({ stock, qty }: { stock: string; qty: number }) => {
-    placeOrder(stock, qty, "SELL");
+    await placeOrder(stock, qty, "SELL");
     return {
       content: [{ type: "text", text: "Stock has been sold" }],
     };
@@ -73,8 +73,12 @@ server.registerTool(
 );
 
 async function main() {
-  const transport = new StdioServerTransport();
-  await server.connect(transport);
+  try {
+    const transport = new StdioServerTransport();
+    await server.connect(transport);
+  } catch (err) {
+    console.error(err);
+  }
 }
 
 main();
