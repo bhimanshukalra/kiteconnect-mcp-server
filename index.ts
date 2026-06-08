@@ -6,6 +6,34 @@ import { placeOrder } from "./trade";
 const server = new McpServer({ name: "demo-server", version: "1.0.0" });
 
 server.registerTool(
+  "buy_stock",
+  {
+    description: "Buy a stock",
+    inputSchema: z.object({ stock: z.string(), qty: z.number().positive() }),
+  },
+  async ({ stock, qty }: { stock: string; qty: number }) => {
+    await placeOrder(stock, qty, "BUY");
+    return {
+      content: [{ type: "text", text: "Stock has been bought" }],
+    };
+  },
+);
+
+server.registerTool(
+  "sell_stock",
+  {
+    description: "Sell a stock",
+    inputSchema: z.object({ stock: z.string(), qty: z.number().positive() }),
+  },
+  async ({ stock, qty }: { stock: string; qty: number }) => {
+    await placeOrder(stock, qty, "SELL");
+    return {
+      content: [{ type: "text", text: "Stock has been sold" }],
+    };
+  },
+);
+
+server.registerTool(
   "greet",
   {
     description: "Greet someone by name",
@@ -40,34 +68,6 @@ server.registerTool(
     }
     return {
       content: [{ type: "text", text: String(answer) }],
-    };
-  },
-);
-
-server.registerTool(
-  "buy_stock",
-  {
-    description: "Buy a stock",
-    inputSchema: z.object({ stock: z.string(), qty: z.number().positive() }),
-  },
-  async ({ stock, qty }: { stock: string; qty: number }) => {
-    await placeOrder(stock, qty, "BUY");
-    return {
-      content: [{ type: "text", text: "Stock has been bought" }],
-    };
-  },
-);
-
-server.registerTool(
-  "sell_stock",
-  {
-    description: "Sell a stock",
-    inputSchema: z.object({ stock: z.string(), qty: z.number().positive() }),
-  },
-  async ({ stock, qty }: { stock: string; qty: number }) => {
-    await placeOrder(stock, qty, "SELL");
-    return {
-      content: [{ type: "text", text: "Stock has been sold" }],
     };
   },
 );
