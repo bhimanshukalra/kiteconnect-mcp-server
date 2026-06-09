@@ -1,6 +1,6 @@
-# Kite Connect MCP Server
+# Kite Connect MCP POC
 
-A small TypeScript MCP server that exposes tools for basic calculations, greetings, and placing Kite Connect stock orders over stdio.
+A proof-of-concept TypeScript MCP server that demonstrates how MCP tools can call Kite Connect APIs over stdio. This project is intentionally incomplete and focuses on proving the primary concept rather than providing a production-ready trading integration.
 
 ## Features
 

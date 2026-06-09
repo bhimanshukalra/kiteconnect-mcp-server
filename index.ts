@@ -3,7 +3,7 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { z } from "zod";
 import { placeOrder } from "./trade";
 
-const server = new McpServer({ name: "demo-server", version: "1.0.0" });
+const server = new McpServer({ name: "kiteconnect-mcp-poc", version: "0.1.0" });
 
 server.registerTool(
   "buy_stock",
